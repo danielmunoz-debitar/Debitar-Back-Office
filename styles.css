@@ -110,3 +110,17 @@ body .card small,body .card label,body .card p,body .task-card small,body .task-
 #view table tbody td .badtext{color:#ff9fb3!important}
 #view table thead th{color:#c8eff7!important}
 #view .project-card .pill,#view table tbody .pill,#view table tbody .badge{color:#fff!important}
+
+/* DEBITAR modal audit contrast v1.1.4 */
+.modal,.modal-bg .modal{background:#13263e!important;color:#edf7ff!important}
+.modal h1,.modal h2,.modal h3,.modal h4,.modal strong,.modal b{color:#f2f8ff!important}
+.modal p,.modal label,.modal small,.modal span,.modal div{color:inherit}
+.modal .muted,.modal small{color:#bbccdf!important}
+.modal table,.modal table tbody,.modal table tbody tr,.modal table tbody td{background:#192f49!important;color:#eaf4ff!important}
+.modal table tbody tr:nth-child(even){background:#203a55!important}
+.modal table tbody td,.modal table tbody td span,.modal table tbody td b,.modal table tbody td small{color:#eaf4ff!important}
+.modal table thead,.modal table thead tr,.modal table thead th{background:#28425e!important;color:#eaf4ff!important}
+.modal .audit-scroll{background:#192f49!important;border-radius:10px;overflow:auto}
+.modal .close{color:#fff!important}
+.modal .btn{color:#fff}
+.modal .btn.ghost{color:#eaf4ff!important}
