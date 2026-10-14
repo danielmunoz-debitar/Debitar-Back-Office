@@ -94,3 +94,19 @@ body .task-card,body .task-item,body .task-row{background:#14263f;border-color:#
 body .task-card *,body .task-item *,body .task-row *{color:inherit}
 body .task-card .btn,body .task-item .btn,body .task-row .btn{color:#f3f9ff}
 body .card small,body .card label,body .card p,body .task-card small,body .task-item small{color:#d2e1f1}
+
+
+/* DEBITAR final contrast: projects and work agenda */
+.project-card,.project-card:hover{background:#14263f!important;border:1px solid #3a5677!important;color:#f1f7ff!important;box-shadow:none!important}
+.project-card h3,.project-card b,.project-card strong,.project-card .num{color:#f5f9ff!important}
+.project-card p,.project-card small,.project-card label,.project-card span{color:#c5d7e9!important}
+.project-card .project-metrics span,.project-card .project-metrics>*,.project-card .project-metrics>div{background:#203956!important;color:#dceaff!important}
+.project-card .project-metrics b,.project-card .project-metrics strong{color:#fff!important}
+.task-overdue{background:#2c2035!important;color:#f5e9f1!important}
+.task-overdue td,.task-overdue span,.task-overdue small,.task-overdue b{color:#f3eaf5!important}
+#view table tbody tr{background:#152b44!important;color:#edf6ff!important}
+#view table tbody tr:nth-child(even){background:#1a3450!important}
+#view table tbody td,#view table tbody td span,#view table tbody td small,#view table tbody td b{color:#e7f2ff!important}
+#view table tbody td .badtext{color:#ff9fb3!important}
+#view table thead th{color:#c8eff7!important}
+#view .project-card .pill,#view table tbody .pill,#view table tbody .badge{color:#fff!important}
