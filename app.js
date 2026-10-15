@@ -492,3 +492,79 @@ ensure();save();prevShell();
  };
  if(page==='Inicio')render();
 })();
+
+
+/* DEBITAR period-safe expense debt management v1.1.6 */
+(function(){
+ const previousMonthExpenses=monthExpenses, previousRender=render;
+ monthExpenses=function(m=state.selectedMonth){
+  return previousMonthExpenses(m).filter(e=>{
+   const override=(state.expenseMonths?.[m]||{})[e.id]||{};
+   return !override.excluded && !(e.stopFromMonth && m>=e.stopFromMonth);
+  });
+ };
+ function periodOpen(){
+  const p=state.periodControl?.[state.selectedMonth];
+  if(!p||p.status!=='open'){alert('Primero abre o reabre este período para modificar registros.');return false}
+  return true;
+ }
+ function editActions(){
+  if(page!=='Gastos'&&page!=='Deudas')return;
+  const rows=[...document.querySelectorAll('#view table tbody tr')];
+  const records=page==='Gastos'?monthExpenses():debtsM();
+  rows.forEach((row,i)=>{
+   const rec=records[i];if(!rec)return;
+   const cell=row.lastElementChild;if(!cell)return;
+   const btn=document.createElement('button');btn.type='button';btn.className='btn ghost sm';btn.style.marginLeft='8px';
+   btn.textContent=page==='Gastos'?'Administrar':'Editar / eliminar';
+   btn.onclick=()=>page==='Gastos'?manageExpense(rec.id):manageDebt(rec.id);
+   cell.appendChild(btn);
+  });
+ }
+ function manageExpense(id){
+  if(!periodOpen())return;
+  const e=monthExpenses().find(x=>x.id===id);if(!e)return;
+  const paid=e.status==='Pagado';
+  modal('<h3>Administrar gasto: '+esc(e.name)+'</h3><p>Período '+state.selectedMonth+'. El historial de otros meses se conserva.</p><div class="actions"><button class="btn" id="only">Quitar solo de este mes</button><button class="btn ghost" id="future">Desactivar desde este mes</button></div><p class="muted">'+(paid?'Este gasto figura pagado. Primero debe revisarse su pago y saldo; no se permite eliminarlo automáticamente.':'Solo se pueden quitar gastos sin pagos registrados.')+'</p>',b=>{
+   const one=$('#only',b),future=$('#future',b);one.disabled=paid;future.disabled=paid;
+   one.onclick=()=>{
+    if(!periodOpen()||!confirm('¿Quitar '+e.name+' solo de '+state.selectedMonth+'?'))return;
+    state.expenseMonths[state.selectedMonth]??={};
+    state.expenseMonths[state.selectedMonth][id]={...(state.expenseMonths[state.selectedMonth][id]||{}),excluded:true};
+    save('Gasto quitado de este mes');b.remove();render();
+   };
+   future.onclick=()=>{
+    if(!periodOpen()||!confirm('¿Desactivar '+e.name+' desde '+state.selectedMonth+' en adelante? Los meses anteriores se conservarán.'))return;
+    const template=state.expenseTemplates.find(x=>x.id===id);
+    if(!template)return;
+    const paidFuture=Object.entries(state.expenseMonths||{}).some(([m,items])=>m>=state.selectedMonth&&items?.[id]?.status==='Pagado');
+    if(paidFuture){alert('Existen pagos registrados desde este mes. No se puede desactivar la recurrencia sin revisar esos movimientos.');return}
+    template.stopFromMonth=state.selectedMonth;
+    save('Recurrencia desactivada desde este mes');b.remove();render();
+   };
+  });
+ }
+ function manageDebt(id){
+  if(!periodOpen())return;
+  const d=state.debts.find(x=>x.id===id&&ym(x.date)===state.selectedMonth);if(!d)return;
+  const paid=d.status==='Pagada';
+  modal('<h3>Administrar cuota</h3><div class="form-grid"><div class="field"><label>Acreedor</label><input id="debt-name"></div><div class="field"><label>Fecha</label><input id="debt-date" type="date"></div><div class="field"><label>Monto</label><input id="debt-amount" type="number" min="0"></div></div><div class="actions"><button class="btn" id="debt-save">Guardar cambios</button><button class="btn ghost" id="debt-delete">Eliminar cuota</button></div><p class="muted">'+(paid?'Cuota pagada: edición y eliminación bloqueadas para proteger el saldo bancario.':'Solo se modifica esta cuota, no otros períodos.')+'</p>',b=>{
+   $('#debt-name',b).value=d.name;$('#debt-date',b).value=d.date;$('#debt-amount',b).value=d.amount;
+   $('#debt-save',b).disabled=paid;$('#debt-delete',b).disabled=paid;
+   $('#debt-save',b).onclick=()=>{
+    if(!periodOpen())return;
+    const name=$('#debt-name',b).value.trim(),date=$('#debt-date',b).value,amount=Number($('#debt-amount',b).value);
+    if(!name||!date||!Number.isFinite(amount)||amount<0){alert('Completa acreedor, fecha y monto válido.');return}
+    if(date.slice(0,7)!==state.selectedMonth){alert('Para mover la cuota a otro mes, ábrelo y regístrala allí.');return}
+    d.name=name;d.date=date;d.amount=amount;save('Cuota actualizada');b.remove();render();
+   };
+   $('#debt-delete',b).onclick=()=>{
+    if(!periodOpen()||!confirm('¿Eliminar la cuota pendiente de '+d.name+' por '+fmt(d.amount)+'? Esta acción no afecta otros meses.'))return;
+    state.debts=state.debts.filter(x=>x.id!==id);
+    save('Cuota eliminada');b.remove();render();
+   };
+  });
+ }
+ render=function(){previousRender();editActions()};
+ editActions();
+})();
