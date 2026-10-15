@@ -124,3 +124,16 @@ body .card small,body .card label,body .card p,body .task-card small,body .task-
 .modal .close{color:#fff!important}
 .modal .btn{color:#fff}
 .modal .btn.ghost{color:#eaf4ff!important}
+
+
+/* DEBITAR client monthly modal contrast v1.1.5 */
+.modal .ops-tabs>.card,.modal .ops-tabs .card{background:#182e49!important;border:1px solid #45617f!important;color:#edf7ff!important;box-shadow:none!important}
+.modal .ops-tabs .card h3,.modal .ops-tabs .card h4{color:#fff!important}
+.modal .ops-tabs .card .field label,.modal .ops-tabs .card label,.modal .ops-tabs .card .checklist span,.modal .ops-tabs .card p,.modal .ops-tabs .card small,.modal .ops-tabs .card b{color:#dceafd!important}
+.modal .ops-tabs .card input,.modal .ops-tabs .card select,.modal .ops-tabs .card textarea{background:#0b1c31!important;color:#fff!important;border:1px solid #5c7695!important}
+.modal .ops-tabs .card input[type=checkbox]{accent-color:#42cfdf!important}
+.modal .ops-tabs .card input:disabled{color:#dceafd!important;opacity:1!important}
+.modal .ops-tabs .card .addon-grid label,.modal .ops-tabs .card .checklist label{background:#203b58!important;color:#eaf5ff!important;border-color:#5b7390!important}
+.modal .ops-tabs .card .btn,.modal .ops-tabs .card button{color:#f6fbff!important;background:#275a83!important;border-color:#5980a4!important}
+.modal .ops-tabs .card .btn:hover,.modal .ops-tabs .card button:hover{background:#3478a8!important}
+.modal .ops-tabs .card .empty{color:#d2e1f1!important}
