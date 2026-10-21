@@ -141,3 +141,45 @@ body{background:#091323;color:var(--txt);font-family:Inter,system-ui,Segoe UI,sa
 .modal-bg .modal,.modal-bg .modal .card{background:#13263e!important;color:#edf7ff!important}
 .modal-bg .modal h2,.modal-bg .modal h3,.modal-bg .modal strong{color:#f2f8ff!important}
 @media(max-width:700px){.v2-hlayout #view .grid.two,.v2-hlayout #view .grid.three,.v2-hlayout #view .grid.kpis{grid-template-columns:1fr!important}.v2-hlayout #view .card:has(table){overflow-x:auto!important}}
+
+
+/* 2.0.5 DEBITAR signature identity — purple / cyan, not third-party visual */
+.v2-hlayout{background:linear-gradient(155deg,#f8f9fd 0%,#f1f5fb 55%,#f8f6fc 100%)!important}
+.v2-hheader{background:#17142c!important;border-bottom:3px solid #6b36a0!important;min-height:80px}
+.v2-hbrand img{width:165px!important;height:62px!important}
+.v2-hbrand span{color:#73e5f2!important;letter-spacing:1.3px}
+.v2-hmeta .month{background:#26213d!important;color:#f4f0ff!important;border:1px solid #6c558b!important}
+.v2-hnav{background:linear-gradient(100deg,#332054 0%,#422669 52%,#233453 100%)!important;border-bottom:3px solid #59d5e6!important;box-shadow:0 8px 18px #35224b18!important}
+.v2-menuitem{color:#f5edff!important;font-size:13px!important;border-bottom:3px solid transparent!important}
+.v2-menuitem span{color:#6ae2ef!important}
+.v2-menuitem:hover,.v2-menuitem.active{background:#ffffff18!important;border-bottom-color:#59d5e6!important}
+.v2-dropcontent{border:1px solid #e6e1f1!important;border-top:3px solid #7646b2!important;box-shadow:0 18px 35px #38204d30!important;border-radius:0 0 13px 13px!important}
+.v2-droptitle{color:#43265e!important}
+.v2-droplist button:hover{background:#f3edfa!important}
+.v2-dropicon{background:#e9f9fc!important;color:#662b9d!important}
+.v2-hheading h1{color:#32204e!important}
+.v2-hlayout .v2-eyebrow{color:#7b519b!important}
+.v2-hlayout .v2-stat{border-top:3px solid #6d43a9!important}
+.v2-hlayout .v2-stat:nth-child(2){border-top-color:#4dcddd!important}
+.v2-hlayout .v2-stat:nth-child(3){border-top-color:#9470cf!important}
+.v2-hlayout .v2-stat:nth-child(4){border-top-color:#a7b6d7!important}
+.v2-hlayout .v2-stat span{color:#69409c!important}
+.v2-hlayout .v2-quickbutton{background:#f4f0fa!important;border-color:#e2d6f1!important;color:#36214e!important}
+.v2-hlayout .v2-quickbutton:hover{background:#eae1f5!important}
+.v2-hlayout .v2-quickbutton span{color:#6a36a4!important}
+.v2-hlayout #view .card,.v2-hlayout #view .kpi,.v2-hlayout #view .project-card{border:1px solid #e1e4f0!important}
+.v2-hlayout #view table tbody tr,.v2-hlayout #view table tbody tr:nth-child(even),
+.v2-hlayout #view table tbody tr[style],.v2-hlayout #view .tablewrap tbody tr{background:#fff!important;color:#24344c!important}
+.v2-hlayout #view table tbody tr:nth-child(even){background:#f7f6fb!important}
+.v2-hlayout #view table tbody td,.v2-hlayout #view table tbody td span,
+.v2-hlayout #view table tbody td small,.v2-hlayout #view table tbody td b,
+.v2-hlayout #view table tbody td strong,.v2-hlayout #view table tbody td a,
+.v2-hlayout #view table tbody td label{color:#25334c!important}
+.v2-hlayout #view table tbody td button:not(.btn){background:#f4f0fa!important;color:#513180!important;border:1px solid #cfc1e3!important}
+.v2-hlayout #view .pill.ok,.v2-hlayout #view table tbody .pill.ok{background:#d8f4e8!important;color:#146e4d!important}
+.v2-hlayout #view .pill.bad,.v2-hlayout #view table tbody .pill.bad{background:#fbe1e5!important;color:#a3314a!important}
+.v2-hlayout #view .pill.wait,.v2-hlayout #view table tbody .pill.wait{background:#fff0d6!important;color:#855300!important}
+.v2-hlayout #view .v2-panel .v2-total{background:#f0ebf7!important}
+.v2-hlayout #view .v2-panel .v2-total strong{color:#352151!important}
+.v2-hlayout .v2-analytics-card{border-top:3px solid #7448ac!important}
+@media(max-width:700px){.v2-hbrand img{width:120px!important;height:50px!important}.v2-hnav{background:#372156!important}}
