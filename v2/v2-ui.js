@@ -55,9 +55,9 @@
   return '<div class="v2-goal"><div class="v2-goalnumbers"><span>Ingreso registrado del mes</span><strong>'+fmt(m.income)+'</strong></div><div class="v2-meter"><div style="width:'+progress+'%"></div></div><div class="v2-goalnumbers"><span>Meta de referencia</span><strong>'+fmt(target)+'</strong></div><div class="v2-goalgap">Brecha para alcanzar la meta: <b>'+fmt(Math.max(0,target-m.income))+'</b></div><p class="v2-footnote">Meta referencial editable en una próxima etapa. Los ingresos proyectados no equivalen a cobros realizados.</p>'+goals.slice(0,3).map(o=>'<div class="v2-goalitem"><span>'+esc2(o.name)+'</span><b>'+fmt(o.current)+' / '+fmt(o.target)+'</b></div>').join('')+'</div>';
  }
 
- let v2Section='';
+ let v2Section='',v2Page=page;
  const redraw=render;
- render=function(){redraw(); if(v2Section)applySubsection(); if(page==='Inicio')document.querySelectorAll('#view [data-p]').forEach(b=>b.onclick=()=>{page=b.dataset.p;shell()});};
+ render=function(){redraw(); if(v2Section && (!state.periodControl || state.periodControl[state.selectedMonth]?.status==='open'))applySubsection(); if(page==='Inicio')document.querySelectorAll('#view [data-p]').forEach(b=>b.onclick=()=>{page=b.dataset.p;v2Section='';shell()});};
  function titleFor(){return v2Section||mainPage(page)}
  function applySubsection(){
   const root=document.querySelector('#view');if(!root)return;
@@ -78,21 +78,21 @@
       '<div class="grid three">'+kpi('Ingresos registrados',fmt(m.income))+kpi('Obligaciones del mes',fmt(m.due))+kpi('Resultado proyectado',fmt(m.result))+'</div><div class="v2-sectionlinks"><button class="btn ghost" data-v2goto="Bancos y cuentas">Bancos y cuentas</button><button class="btn ghost" data-v2goto="Ingresos">Ver ingresos</button><button class="btn ghost" data-v2page="Gastos">Gastos</button><button class="btn ghost" data-v2page="Deudas">Deudas</button></div>');break;
     }
     case 'Finanzas|Bancos y cuentas':
-     content=template(label,'Saldos de las cuentas registradas y transferencias.',pick(fin(),[0,1]));break;
+     content=template(label,'Saldos de las cuentas registradas y transferencias.',fin());break;
     case 'Finanzas|Ingresos':
-     content=template(label,'Movimientos de ingresos registrados para el período.',pick(fin(),[0,2,3]));break;
+     content=template(label,'Movimientos de ingresos registrados para el período.',fin());break;
     case 'Uber|Turno y viajes':
      content=template(label,'Registro de turnos, resultados e historial de viajes.',ub());break;
     case 'Uber|Billetera y combustible':{
      const m=metrics();
      content=template(label,'Resultado económico de Uber y acceso a la gestión de combustible y turnos.',
-      '<div class="grid three">'+kpi('Neto económico',fmt(m.uber))+kpi('Horas Uber',num(m.uberHours)+' h')+kpi('Meta faltante',fmt(m.uberMissing))+'</div>'+pick(ub(),[1,2])+
+      '<div class="grid three">'+kpi('Neto económico',fmt(m.uber))+kpi('Horas Uber',num(m.uberHours)+' h')+kpi('Meta faltante',fmt(m.uberMissing))+'</div>'+ub()+
       '<div class="v2-sectionlinks"><button class="btn ghost" data-v2goto="Turno y viajes">Ver historial de turnos</button><button class="btn ghost" data-v2page="Finanzas">Ver cuentas y billeteras</button></div>');break;
     }
     case 'Tareas|Tareas pendientes':
      content=template(label,'Tareas registradas, prioridades, fechas y seguimiento.',task());break;
     case 'Tareas|Calendario y vencimientos':
-     content=template(label,'Agenda y vencimientos asociados a las tareas existentes.',pick(task(),[1,2,3]));break;
+     content=template(label,'Agenda y vencimientos asociados a las tareas existentes.',task());break;
     case 'Reportes|Informes':
     case 'Reportes|Informes financieros':
      content=template(label,'Resultados históricos y flujo de caja del período.',rep());break;
@@ -117,13 +117,21 @@
    const card=(title,desc,body)=>'<section class="v2-subcard"><h2>'+title+'</h2><p>'+desc+'</p>'+body+'</section>';
    const table=(headers,rows)=>'<div class="v2-scroll"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table></div>';
    if(text.includes('prospect')){
-    root.innerHTML=card('Prospectos','Seguimiento comercial de oportunidades registradas.','<button class="btn" data-act="newprospect">+ Nuevo prospecto</button>'+table(['Prospecto','Estado','Detalle'],prospects.map(p=>'<tr><td>'+esc2(p.name||p.company||'Sin nombre')+'</td><td>'+esc2(p.status||'En seguimiento')+'</td><td>'+esc2(p.notes||'—')+'</td></tr>'))+(prospects.length?'':'<p>No hay prospectos registrados.</p>'));
+    root.innerHTML=card('Prospectos','Seguimiento comercial de oportunidades registradas.','<button class="btn" data-act="newprospect">+ Nuevo prospecto</button>'+table(['Prospecto','Estado','Detalle','Acción'],prospects.map(p=>'<tr><td>'+esc2(p.name||p.company||'Sin nombre')+'</td><td>'+esc2(p.status||'En seguimiento')+'</td><td>'+esc2(p.note||p.notes||'—')+'</td><td><button class="btn ghost sm" data-prospect-edit="'+esc2(p.id)+'">Editar</button></td></tr>'))+(prospects.length?'':'<p>No hay prospectos registrados.</p>'));
    }else if(text.includes('cobranza')||text.includes('honorario')){
     root.innerHTML=card('Honorarios y cobranza','Estado de cobro correspondiente al período '+esc2(state.selectedMonth)+'.',table(['Cliente','Honorario','Estado','Acción'],clients.filter(c=>c.active).map(c=>{const co=collections.find(x=>x.clientId===c.id);return '<tr><td>'+esc2(c.name)+'</td><td>'+fmt(c.fee)+'</td><td><span class="v2-state '+(co?.status==='Cobrado'?'paid':'')+'">'+(co?.status==='Cobrado'?'Cobrado':'Pendiente')+'</span></td><td>'+(co?.status==='Cobrado'?'<button class="btn ghost sm" data-client="'+c.id+'">Ver ficha</button>':'<button class="btn sm" data-collect="'+c.id+'">Registrar cobro</button>')+'</td></tr>';})));
    }else if(text.includes('gestiones')){
-    root.innerHTML=card('Gestiones por cliente','Accede a la ficha para revisar o registrar seguimiento.',table(['Cliente','Contacto','Ficha'],clients.filter(c=>c.active).map(c=>'<tr><td>'+esc2(c.name)+'</td><td>'+esc2(c.email||c.phone||'Sin contacto')+'</td><td><button class="btn ghost sm" data-client="'+c.id+'">Abrir ficha</button></td></tr>')));
+    root.innerHTML=monthlyControlBlock();bind();return;
+
    }else{
-    root.innerHTML=card('Cartera de clientes','Clientes activos e inactivos; el honorario histórico se conserva.','<button class="btn" data-act="newclient">+ Nuevo cliente</button>'+table(['Cliente','RUT','Honorario','Día de cobro','Estado','Ficha'],clients.map(c=>'<tr><td>'+esc2(c.name)+'</td><td>'+esc2(c.rut||'—')+'</td><td>'+fmt(c.active?c.fee:0)+'</td><td>'+esc2(c.day||'—')+'</td><td><span class="v2-state '+(c.active?'paid':'')+'">'+(c.active?'Activo':'Inactivo')+'</span></td><td><button class="btn ghost sm" data-client="'+c.id+'">Abrir ficha</button></td></tr>')));
+    root.innerHTML='<section class="v2-subcard"><h2>Cartera y fichas</h2><div class="field"><label for="v2-client-search">Buscar por nombre, RUT, correo o teléfono</label><input id="v2-client-search" type="search" placeholder="Buscar cliente" autocomplete="off"></div><p id="v2-client-count" role="status"></p></section>'+debitar();
+    const search=root.querySelector('#v2-client-search');
+    search.oninput=()=>{
+     const q=search.value.trim().toLocaleLowerCase('es-CL');
+     const ids=new Set(clients.filter(c=>[c.name,c.rut,c.email,c.phone].join(' ').toLocaleLowerCase('es-CL').includes(q)).map(c=>c.id));
+     root.querySelectorAll('.portfolio-row, tr').forEach(row=>{const b=row.querySelector('[data-client],[data-client-ops]');if(b)row.hidden=!ids.has(b.dataset.client||b.dataset.clientOps)});
+     root.querySelector('#v2-client-count').textContent=ids.size+' clientes encontrados';
+    };search.oninput();
    }
    bind();return;
   }
@@ -145,6 +153,7 @@
  }
  function v2nav(){return NAV.map(([label,ico,target])=>'<button class="v2-navitem '+(page===target?'active':'')+'" data-v2nav="'+target+'"><span class="v2-icon">'+ico+'</span><span>'+label+'</span></button>').join('')}
  shell=function(){
+  if(page!==v2Page){v2Section='';v2Page=page;}
   const menu=[
    ['Inicio','Inicio',[['Panel general','Inicio'],['Objetivos y metas','Objetivos']]],
    ['Clientes','DEBITAR',[['Cartera y fichas','DEBITAR'],['Prospectos','DEBITAR','Prospectos'],['Honorarios y cobranza','DEBITAR','Cobranza'],['Gestiones por cliente','DEBITAR','Clientes']]],
@@ -155,15 +164,22 @@
    ['Documentos','Documentos',[['Archivos y plantillas','Documentos']]],
    ['Configuración','Configuración',[['Parámetros','Configuración'],['Respaldos JSON','Configuración']]]
   ];
-  const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+'data-v2sub="'+esc2(name)+'"'+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
-  document.querySelector('#app').innerHTML='<div class="v2-hlayout"><header class="v2-hheader top"><div class="v2-hbrand"><img src="https://danielmunoz-debitar.github.io/centro-operaciones/assets/logo-debitar.png" alt="DEBITAR"><span>CENTRO DE OPERACIONES 2.0</span></div><div class="v2-hmeta"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><nav class="v2-hnav"><button id="v2-mobile-menu" class="v2-mobile-menu">☰ Módulos</button><div class="v2-hnavitems" id="v2-hnavitems">'+menuHtml+'</div></nav><main class="v2-hmain"><div class="v2-hheading"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div></div><div id="view"></div></main></div>';
+  const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button aria-haspopup="true" aria-expanded="false" class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+'data-v2sub="'+esc2(name)+'"'+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
+  document.querySelector('#app').innerHTML='<div class="v2-hlayout"><header class="v2-hheader top"><div class="v2-hbrand"><img src="../debitar-logo.png" alt="DEBITAR"><span>CENTRO DE OPERACIONES 2.0</span></div><div class="v2-hmeta"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><nav class="v2-hnav"><button id="v2-mobile-menu" class="v2-mobile-menu">☰ Módulos</button><div class="v2-hnavitems" id="v2-hnavitems">'+menuHtml+'</div></nav><main class="v2-hmain"><div class="v2-hheading"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div></div><div id="view"></div></main></div>';
   document.querySelectorAll('[data-v2nav]').forEach(b=>b.onclick=e=>{
-   e.stopPropagation();page=b.dataset.v2nav;
+   e.stopPropagation();
+   if(b.classList.contains('v2-menuitem')){
+    const dropdown=b.closest('.v2-dropdown'),open=!dropdown.classList.contains('v2-open');
+    document.querySelectorAll('.v2-dropdown').forEach(d=>{d.classList.remove('v2-open');d.querySelector('.v2-menuitem').setAttribute('aria-expanded','false')});
+    dropdown.classList.toggle('v2-open',open);b.setAttribute('aria-expanded',String(open));return;
+   }
+   page=b.dataset.v2nav;v2Page=page;
    v2Section=b.dataset.v2sub||'';
    shell();
   });
+  document.querySelector('.v2-hnav').onkeydown=e=>{if(e.key==='Escape'){const d=e.target.closest('.v2-dropdown');if(d){d.classList.remove('v2-open');d.querySelector('.v2-menuitem').setAttribute('aria-expanded','false');e.target.blur();}}};
   document.querySelector('#v2-mobile-menu').onclick=()=>document.querySelector('#v2-hnavitems').classList.toggle('open');
-  document.querySelector('#month').onchange=e=>{state.selectedMonth=e.target.value;save();shell()};
+  document.querySelector('#month').onchange=e=>{if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(e.target.value))return;state.selectedMonth=e.target.value;save();shell()};
   if(page==='Documentos'){document.querySelector('#view').innerHTML='<div class="card"><h2>Documentos</h2><p>Módulo en preparación. Los archivos actuales permanecen intactos.</p></div>';}else render();
  };
  shell();

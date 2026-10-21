@@ -386,3 +386,13 @@ body{background:#091323;color:var(--txt);font-family:Inter,system-ui,Segoe UI,sa
 .v2-hlayout #view .v2-backup .grid{display:block}
 .v2-hlayout #view .v2-backup .card{max-width:740px}
 @media(max-width:700px){.v2-hlayout #view .v2-sectionlinks{flex-direction:column}.v2-hlayout #view .v2-sectionlinks .btn{width:100%}}
+
+/* 2.0.10: tables remain usable on small screens and keyboard focus stays visible. */
+.v2-hlayout #view .tablewrap,.v2-hlayout #view .card:has(>table){overflow-x:auto}
+.v2-hlayout [hidden]{display:none!important}
+.v2-hlayout button:focus-visible,.v2-hlayout input:focus-visible{outline:3px solid #00a9c0;outline-offset:3px}
+.v2-dropdown:nth-last-child(-n+2) .v2-dropcontent{left:auto;right:0}
+@media(max-width:700px){.v2-dropcontent{min-width:0}.v2-hmain{min-width:0}}
+@media(prefers-reduced-motion:reduce){.v2-hlayout *{animation:none!important;transition:none!important}}
+.v2-dropdown.v2-open .v2-dropcontent{display:block}
+@media(hover:none){.v2-dropdown:not(.v2-open):hover .v2-dropcontent,.v2-dropdown:not(.v2-open):focus-within .v2-dropcontent{display:none}}

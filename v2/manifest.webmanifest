@@ -1,1 +1,1 @@
-{"name":"DEBITAR Centro de Operaciones 2.0","short_name":"DEBITAR","start_url":"./","display":"standalone","background_color":"#06101d","theme_color":"#07111f","icons":[{"src":"https://danielmunoz-debitar.github.io/centro-operaciones/assets/logo-debitar.png","sizes":"any","type":"image/png"}]}
+{"name": "DEBITAR Centro de Operaciones 2.0", "short_name": "DEBITAR", "start_url": "./", "display": "standalone", "background_color": "#06101d", "theme_color": "#07111f", "icons": [{"src": "../debitar-logo.png", "sizes": "any", "type": "image/png"}], "scope": "./", "id": "./"}
