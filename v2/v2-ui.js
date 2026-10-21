@@ -55,9 +55,44 @@
   return '<div class="v2-goal"><div class="v2-goalnumbers"><span>Ingreso registrado del mes</span><strong>'+fmt(m.income)+'</strong></div><div class="v2-meter"><div style="width:'+progress+'%"></div></div><div class="v2-goalnumbers"><span>Meta de referencia</span><strong>'+fmt(target)+'</strong></div><div class="v2-goalgap">Brecha para alcanzar la meta: <b>'+fmt(Math.max(0,target-m.income))+'</b></div><p class="v2-footnote">Meta referencial editable en una próxima etapa. Los ingresos proyectados no equivalen a cobros realizados.</p>'+goals.slice(0,3).map(o=>'<div class="v2-goalitem"><span>'+esc2(o.name)+'</span><b>'+fmt(o.current)+' / '+fmt(o.target)+'</b></div>').join('')+'</div>';
  }
 
+ let v2Section='';
  const redraw=render;
- render=function(){redraw(); if(page==='Inicio')document.querySelectorAll('#view [data-p]').forEach(b=>b.onclick=()=>{page=b.dataset.p;shell()});};
- function titleFor(){return mainPage(page)}
+ render=function(){redraw(); if(v2Section)applySubsection(); if(page==='Inicio')document.querySelectorAll('#view [data-p]').forEach(b=>b.onclick=()=>{page=b.dataset.p;shell()});};
+ function titleFor(){return v2Section||mainPage(page)}
+ function applySubsection(){
+  const root=document.querySelector('#view');if(!root)return;
+  const label=v2Section;const text=label.toLocaleLowerCase('es-CL');
+  if(page==='DEBITAR'){
+   const clients=state.clients||[],prospects=state.prospects||[],collections=collectionsM();
+   const card=(title,desc,body)=>'<section class="v2-subcard"><h2>'+title+'</h2><p>'+desc+'</p>'+body+'</section>';
+   const table=(headers,rows)=>'<div class="v2-scroll"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table></div>';
+   if(text.includes('prospect')){
+    root.innerHTML=card('Prospectos','Seguimiento comercial de oportunidades registradas.','<button class="btn" data-act="newprospect">+ Nuevo prospecto</button>'+table(['Prospecto','Estado','Detalle'],prospects.map(p=>'<tr><td>'+esc2(p.name||p.company||'Sin nombre')+'</td><td>'+esc2(p.status||'En seguimiento')+'</td><td>'+esc2(p.notes||'—')+'</td></tr>'))+(prospects.length?'':'<p>No hay prospectos registrados.</p>'));
+   }else if(text.includes('cobranza')||text.includes('honorario')){
+    root.innerHTML=card('Honorarios y cobranza','Estado de cobro correspondiente al período '+esc2(state.selectedMonth)+'.',table(['Cliente','Honorario','Estado','Acción'],clients.filter(c=>c.active).map(c=>{const co=collections.find(x=>x.clientId===c.id);return '<tr><td>'+esc2(c.name)+'</td><td>'+fmt(c.fee)+'</td><td><span class="v2-state '+(co?.status==='Cobrado'?'paid':'')+'">'+(co?.status==='Cobrado'?'Cobrado':'Pendiente')+'</span></td><td>'+(co?.status==='Cobrado'?'<button class="btn ghost sm" data-client="'+c.id+'">Ver ficha</button>':'<button class="btn sm" data-collect="'+c.id+'">Registrar cobro</button>')+'</td></tr>';})));
+   }else if(text.includes('gestiones')){
+    root.innerHTML=card('Gestiones por cliente','Accede a la ficha para revisar o registrar seguimiento.',table(['Cliente','Contacto','Ficha'],clients.filter(c=>c.active).map(c=>'<tr><td>'+esc2(c.name)+'</td><td>'+esc2(c.email||c.phone||'Sin contacto')+'</td><td><button class="btn ghost sm" data-client="'+c.id+'">Abrir ficha</button></td></tr>')));
+   }else{
+    root.innerHTML=card('Cartera de clientes','Clientes activos e inactivos; el honorario histórico se conserva.','<button class="btn" data-act="newclient">+ Nuevo cliente</button>'+table(['Cliente','RUT','Honorario','Día de cobro','Estado','Ficha'],clients.map(c=>'<tr><td>'+esc2(c.name)+'</td><td>'+esc2(c.rut||'—')+'</td><td>'+fmt(c.active?c.fee:0)+'</td><td>'+esc2(c.day||'—')+'</td><td><span class="v2-state '+(c.active?'paid':'')+'">'+(c.active?'Activo':'Inactivo')+'</span></td><td><button class="btn ghost sm" data-client="'+c.id+'">Abrir ficha</button></td></tr>')));
+   }
+   bind();return;
+  }
+  const selectors={
+   'Finanzas':{'Bancos y cuentas':['.card','Cuentas'],'Ingresos':['.card','Ingresos registrados'],'Flujo de caja':['.card','Flujo'],'Gastos':['.card','Gastos']},
+   'Uber':{'Billetera y combustible':['.card','Billetera'],'Turno y viajes':['.card','Turno']},
+   'Tareas':{'Calendario y vencimientos':['.card','Agenda'],'Tareas pendientes':['.card','Tareas']},
+   'Reportes':{'Informes financieros':['.card','Resultados']}
+  };
+  const config=selectors[page]?.[label];if(!config)return;
+  const nodes=[...root.querySelectorAll(config[0])];
+  const matches=nodes.filter(el=>el.textContent.toLocaleLowerCase('es-CL').includes(config[1].toLocaleLowerCase('es-CL')));
+  if(matches.length){
+   nodes.filter(el=>!matches.includes(el)).forEach(el=>el.classList.add('v2-filtered'));
+  }else{
+   root.innerHTML='<section class="v2-subcard"><h2>'+esc2(label)+'</h2><p>Esta vista especializada está prevista para la siguiente etapa. Puedes utilizar las funciones disponibles desde la pantalla general del módulo.</p><button class="btn" id="v2-overview">Abrir vista general</button></section>';
+   document.querySelector('#v2-overview').onclick=()=>{v2Section='';shell()};
+  }
+ }
  function v2nav(){return NAV.map(([label,ico,target])=>'<button class="v2-navitem '+(page===target?'active':'')+'" data-v2nav="'+target+'"><span class="v2-icon">'+ico+'</span><span>'+label+'</span></button>').join('')}
  shell=function(){
   const menu=[
@@ -70,7 +105,7 @@
    ['Documentos','Documentos',[['Archivos y plantillas','Documentos']]],
    ['Configuración','Configuración',[['Parámetros','Configuración'],['Respaldos JSON','Configuración']]]
   ];
-  const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+(anchor?'data-v2anchor="'+anchor+'"':'')+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
+  const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+(anchor?'data-v2sub="'+esc2(name)+'"':'')+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
   document.querySelector('#app').innerHTML='<div class="v2-hlayout"><header class="v2-hheader top"><div class="v2-hbrand"><img src="https://danielmunoz-debitar.github.io/centro-operaciones/assets/logo-debitar.png" alt="DEBITAR"><span>CENTRO DE OPERACIONES 2.0</span></div><div class="v2-hmeta"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><nav class="v2-hnav"><button id="v2-mobile-menu" class="v2-mobile-menu">☰ Módulos</button><div class="v2-hnavitems" id="v2-hnavitems">'+menuHtml+'</div></nav><main class="v2-hmain"><div class="v2-hheading"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div></div><div id="view"></div></main></div>';
   document.querySelectorAll('[data-v2nav]').forEach(b=>b.onclick=e=>{
    e.stopPropagation();page=b.dataset.v2nav;
