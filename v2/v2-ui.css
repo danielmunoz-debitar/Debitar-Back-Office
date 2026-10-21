@@ -213,3 +213,76 @@ body{background:#091323;color:var(--txt);font-family:Inter,system-ui,Segoe UI,sa
 .v2-hlayout #view .v2-subcard .btn.ghost{background:#f3eef8!important;color:#553384!important;border-color:#cfc0e0!important}
 @media(prefers-reduced-motion:reduce){.v2-dropdown,.v2-menuitem{transition:none!important}.v2-dropdown:hover,.v2-dropdown:focus-within{transform:none!important}}
 @media(max-width:700px){.v2-dropdown:hover,.v2-dropdown:focus-within,.v2-dropdown:hover + .v2-dropdown,.v2-dropdown:has(+ .v2-dropdown:hover){transform:none!important;filter:none!important}.v2-subcard{padding:14px!important}.v2-hnavitems{gap:0!important}}
+
+
+/* DEBITAR 2.0.7: fix remaining inherited dark panels in Clients, Finances, Tasks */
+.v2-hlayout #view .client-row,
+.v2-hlayout #view .client-card,
+.v2-hlayout #view .client-list>div,
+.v2-hlayout #view .cash-banner>div,
+.v2-hlayout #view .time-focus,
+.v2-hlayout #view .time-focus>div,
+.v2-hlayout #view .task-card,
+.v2-hlayout #view .task-item,
+.v2-hlayout #view .task-row,
+.v2-hlayout #view .dash-head,
+.v2-hlayout #view .objective-hero,
+.v2-hlayout #view .wallet,
+.v2-hlayout #view .project-card,
+.v2-hlayout #view .project-metrics>div{
+ background:#f8f9fd!important;
+ background-image:none!important;
+ color:#23334a!important;
+ border:1px solid #dce3ee!important;
+ box-shadow:none!important;
+}
+.v2-hlayout #view .client-row *,
+.v2-hlayout #view .client-card *,
+.v2-hlayout #view .client-list>div *,
+.v2-hlayout #view .cash-banner>div *,
+.v2-hlayout #view .time-focus *,
+.v2-hlayout #view .task-card *,
+.v2-hlayout #view .task-item *,
+.v2-hlayout #view .task-row *,
+.v2-hlayout #view .dash-head *,
+.v2-hlayout #view .objective-hero *,
+.v2-hlayout #view .wallet *,
+.v2-hlayout #view .project-card *,
+.v2-hlayout #view .project-metrics>div *{
+ color:#23334a!important;
+}
+.v2-hlayout #view .client-row small,
+.v2-hlayout #view .client-card small,
+.v2-hlayout #view .cash-banner small,
+.v2-hlayout #view .time-focus small,
+.v2-hlayout #view .task-card small,
+.v2-hlayout #view .task-item small,
+.v2-hlayout #view .task-row small,
+.v2-hlayout #view .dash-head small,
+.v2-hlayout #view .objective-hero small,
+.v2-hlayout #view .wallet small{color:#526981!important}
+.v2-hlayout #view .client-row .btn:not(.ghost),
+.v2-hlayout #view .client-card .btn:not(.ghost),
+.v2-hlayout #view .cash-banner .btn:not(.ghost),
+.v2-hlayout #view .time-focus .btn:not(.ghost),
+.v2-hlayout #view .task-card .btn:not(.ghost),
+.v2-hlayout #view .task-item .btn:not(.ghost),
+.v2-hlayout #view .task-row .btn:not(.ghost),
+.v2-hlayout #view .dash-head .btn:not(.ghost),
+.v2-hlayout #view .objective-hero .btn:not(.ghost),
+.v2-hlayout #view .wallet .btn:not(.ghost){color:#fff!important}
+.v2-hlayout #view .client-row .btn.ghost,
+.v2-hlayout #view .client-card .btn.ghost,
+.v2-hlayout #view .task-card .btn.ghost,
+.v2-hlayout #view .task-row .btn.ghost{color:#51317a!important}
+.v2-hlayout #view .cash-banner b,
+.v2-hlayout #view .cash-banner strong,
+.v2-hlayout #view .time-focus h3,
+.v2-hlayout #view .time-focus strong,
+.v2-hlayout #view .task-card b,
+.v2-hlayout #view .task-row b{color:#241c3b!important}
+.v2-hlayout #view .task-overdue{background:#fff0f0!important;color:#8b293a!important}
+.v2-hlayout #view .task-overdue td,
+.v2-hlayout #view .task-overdue span{color:#8b293a!important}
+.v2-hlayout #view .cash-banner>div{border-top:3px solid #7645a6!important}
+.v2-hlayout #view .time-focus{border-left:4px solid #51c5d6!important}
