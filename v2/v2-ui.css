@@ -351,3 +351,38 @@ body{background:#091323;color:var(--txt);font-family:Inter,system-ui,Segoe UI,sa
  .v2-hlayout #view .v2-quickbutton,
  .v2-hlayout #view table tbody tr{transition:none!important;transform:none!important}
 }
+
+
+/* 2.0.9 — consistent readable module and submenu surfaces */
+.v2-hlayout #view .v2-specialized{display:grid;gap:14px}
+.v2-hlayout #view .v2-sectionintro{background:linear-gradient(110deg,#f4effa,#eef9fb);border-left:4px solid #7540a8;border-radius:11px;padding:16px 20px}
+.v2-hlayout #view .v2-sectionintro h2{color:#31214a!important;margin:0 0 6px;font-size:19px}
+.v2-hlayout #view .v2-sectionintro p{color:#526780!important;margin:0;font-size:13px}
+.v2-hlayout #view .v2-sectionlinks{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.v2-hlayout #view .v2-specialized .grid>.card,
+.v2-hlayout #view .v2-specialized .card,
+.v2-hlayout #view .v2-specialized .kpi,
+.v2-hlayout #view .v2-specialized .notice{background:#fff!important;color:#22334b!important}
+.v2-hlayout #view .v2-specialized .notice{background:#ecf7f6!important;color:#27566b!important;border-color:#c8e9e7!important}
+.v2-hlayout #view .v2-specialized .notice b{color:#1d4058!important}
+.v2-hlayout #view .v2-specialized .card small,
+.v2-hlayout #view .v2-specialized .card em,
+.v2-hlayout #view .v2-specialized .card p,
+.v2-hlayout #view .v2-specialized .card span{color:#50677f!important}
+.v2-hlayout #view .v2-specialized .card h3,
+.v2-hlayout #view .v2-specialized .card .big,
+.v2-hlayout #view .v2-specialized .card b{color:#24314b!important}
+.v2-hlayout #view .v2-specialized .card .pill{background:#e8e1f3!important;color:#4a2d6e!important}
+.v2-hlayout #view .v2-specialized .card .pill.ok{background:#dff6e9!important;color:#196a49!important}
+.v2-hlayout #view .v2-specialized .card .pill.wait{background:#fff0d6!important;color:#82510b!important}
+.v2-hlayout #view .v2-specialized .btn.ghost{color:#513180!important;background:#f5f0fa!important;border:1px solid #c9b9df!important}
+.v2-hlayout #view .v2-specialized .btn:not(.ghost){color:#fff!important}
+.v2-hlayout #view .v2-specialized table,
+.v2-hlayout #view .v2-specialized table tr,
+.v2-hlayout #view .v2-specialized table td{color:#22334b!important}
+.v2-hlayout #view .v2-specialized table tbody tr{background:#fff!important}
+.v2-hlayout #view .v2-specialized table tbody tr:nth-child(even){background:#f8f7fc!important}
+.v2-hlayout #view .v2-specialized table th{background:#efeaf7!important;color:#43315d!important}
+.v2-hlayout #view .v2-backup .grid{display:block}
+.v2-hlayout #view .v2-backup .card{max-width:740px}
+@media(max-width:700px){.v2-hlayout #view .v2-sectionlinks{flex-direction:column}.v2-hlayout #view .v2-sectionlinks .btn{width:100%}}
