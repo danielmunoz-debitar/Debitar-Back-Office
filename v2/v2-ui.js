@@ -62,6 +62,55 @@
  function applySubsection(){
   const root=document.querySelector('#view');if(!root)return;
   const label=v2Section;const text=label.toLocaleLowerCase('es-CL');
+  // Every submenu renders a deliberate view. Do not search arbitrary nested card text.
+  if(page!=='DEBITAR'){
+   const template=(heading,description,body)=>'<div class="v2-specialized"><div class="v2-sectionintro"><h2>'+esc2(heading)+'</h2><p>'+description+'</p></div>'+body+'</div>';
+   const pick=(source,indices)=>{
+    const tmp=document.createElement('div');tmp.innerHTML=source;
+    return indices.map(i=>tmp.children[i]?.outerHTML||'').join('');
+   };
+   const fin=()=>finances(),task=()=>tasksPage(),ub=()=>uber(),rep=()=>reports(),set=()=>settings();
+   let content=null;
+   switch(page+'|'+label){
+    case 'Finanzas|Flujo de caja':{
+     const m=metrics();
+     content=template(label,'Resumen de entradas, obligaciones y resultado del período '+esc2(state.selectedMonth)+'.',
+      '<div class="grid three">'+kpi('Ingresos registrados',fmt(m.income))+kpi('Obligaciones del mes',fmt(m.due))+kpi('Resultado proyectado',fmt(m.result))+'</div><div class="v2-sectionlinks"><button class="btn ghost" data-v2goto="Bancos y cuentas">Bancos y cuentas</button><button class="btn ghost" data-v2goto="Ingresos">Ver ingresos</button><button class="btn ghost" data-v2page="Gastos">Gastos</button><button class="btn ghost" data-v2page="Deudas">Deudas</button></div>');break;
+    }
+    case 'Finanzas|Bancos y cuentas':
+     content=template(label,'Saldos de las cuentas registradas y transferencias.',pick(fin(),[0,1]));break;
+    case 'Finanzas|Ingresos':
+     content=template(label,'Movimientos de ingresos registrados para el período.',pick(fin(),[0,2,3]));break;
+    case 'Uber|Turno y viajes':
+     content=template(label,'Registro de turnos, resultados e historial de viajes.',ub());break;
+    case 'Uber|Billetera y combustible':{
+     const m=metrics();
+     content=template(label,'Resultado económico de Uber y acceso a la gestión de combustible y turnos.',
+      '<div class="grid three">'+kpi('Neto económico',fmt(m.uber))+kpi('Horas Uber',num(m.uberHours)+' h')+kpi('Meta faltante',fmt(m.uberMissing))+'</div>'+pick(ub(),[1,2])+
+      '<div class="v2-sectionlinks"><button class="btn ghost" data-v2goto="Turno y viajes">Ver historial de turnos</button><button class="btn ghost" data-v2page="Finanzas">Ver cuentas y billeteras</button></div>');break;
+    }
+    case 'Tareas|Tareas pendientes':
+     content=template(label,'Tareas registradas, prioridades, fechas y seguimiento.',task());break;
+    case 'Tareas|Calendario y vencimientos':
+     content=template(label,'Agenda y vencimientos asociados a las tareas existentes.',pick(task(),[1,2,3]));break;
+    case 'Reportes|Informes financieros':
+     content=template(label,'Resultados históricos y flujo de caja del período.',rep());break;
+    case 'Configuración|Parámetros':
+     content=template(label,'Configuración general del Centro de Operaciones.',pick(set(),[0]));break;
+    case 'Configuración|Respaldos JSON':
+     content=template(label,'Exportación y restauración de datos de esta versión.',
+       '<div class="v2-backup">'+pick(set(),[0])+'</div>');break;
+   }
+   if(content!==null){
+    root.innerHTML=content;
+    if(page==='Configuración'&&label==='Parámetros')root.querySelectorAll('.card')[1]?.remove();
+    if(page==='Configuración'&&label==='Respaldos JSON')root.querySelectorAll('.card')[0]?.remove();
+    bind();
+    root.querySelectorAll('[data-v2goto]').forEach(b=>b.onclick=()=>{v2Section=b.dataset.v2goto;shell()});
+    root.querySelectorAll('[data-v2page]').forEach(b=>b.onclick=()=>{page=b.dataset.v2page;v2Section='';shell()});
+    return;
+   }
+  }
   if(page==='DEBITAR'){
    const clients=state.clients||[],prospects=state.prospects||[],collections=collectionsM();
    const card=(title,desc,body)=>'<section class="v2-subcard"><h2>'+title+'</h2><p>'+desc+'</p>'+body+'</section>';
