@@ -25,20 +25,62 @@
    '<div class="actions"><button class="btn ghost" data-p="Gastos">Ver gastos</button><button class="btn ghost" data-p="Deudas">Ver deudas</button></div></div>'+
    '<div class="card v2-panel"><div class="section"><h2>Accesos rápidos</h2></div><div class="v2-quick">'+
    [['DEBITAR','Clientes y cobranza'],['Finanzas','Flujo de caja'],['Uber','Registrar turno'],['Tareas','Tareas y vencimientos'],['Reportes','Informes'],['Configuración','Respaldos JSON']].map(a=>'<button class="v2-quickbutton" data-p="'+a[0]+'">'+a[1]+' <span>↗</span></button>').join('')+
-   '</div><p class="muted">Los indicadores se calculan con la lógica financiera heredada. Revisaremos su conciliación antes de una migración definitiva.</p></div></div>';
+   '</div><p class="muted">Indicadores calculados a partir de los registros disponibles en esta versión.</p></div></div>'+
+   '<div class="v2-analytics">'+
+   '<section class="v2-analytics-card"><h3>¿Dónde va mi dinero?</h3><p>Distribución de gastos comprometidos por categoría</p>'+expenseChart()+'</section>'+
+   '<section class="v2-analytics-card"><h3>Prorrateo y planificación mensual</h3><p>Comparación de compromisos del período y proyección</p>'+monthProjection()+'</section>'+
+   '<section class="v2-analytics-card"><h3>Camino a la meta ideal</h3><p>Objetivos y brecha mensual de ingresos</p>'+goalProgress()+'</section>'+
+   '</div>';
  };
+
+ function expenseChart(){
+  const rows=monthExpenses(),debt=debtsM().reduce((a,d)=>a+(Number(d.amount)||0),0);
+  const by={};rows.forEach(e=>{const key=e.category||'Sin categoría';by[key]=(by[key]||0)+(Number(e.amount)||0);});if(debt)by['Cuotas de deudas']=(by['Cuotas de deudas']||0)+debt;
+  const total=Object.values(by).reduce((a,b)=>a+b,0);
+  if(!total)return '<p class="v2-empty">Sin gastos registrados para el período.</p>';
+  const palette=['#52d3e5','#8158cb','#ffbf6b','#69bda6','#ed82a8','#9ba8d8','#7a9ab2','#d5c07d'];
+  const sorted=Object.entries(by).sort((a,b)=>b[1]-a[1]);
+  let cum=0;const segments=sorted.map(([name,v],i)=>{const from=cum/total*100;cum+=v;return palette[i%palette.length]+' '+from+'% '+(cum/total*100)+'%';});
+  return '<div class="v2-chartlayout"><div class="v2-donut" style="background:conic-gradient('+segments.join(',')+')"><div><b>'+fmt(total)+'</b><small>Gasto mensual</small></div></div><div class="v2-chartlegend">'+sorted.map(([name,v],i)=>'<div><span class="v2-dot" style="background:'+palette[i%palette.length]+'"></span><span>'+esc2(name)+'</span><b>'+fmt(v)+'</b><small>'+Math.round(v/total*100)+'%</small></div>').join('')+'</div></div>';
+ }
+ function monthProjection(){
+  const current=state.selectedMonth;const months=[];
+  for(let i=0;i<4;i++){const [y,m]=current.split('-').map(Number);const d=new Date(y,m-1+i,1);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');months.push({key:k,metrics:metrics(k)});}
+  const max=Math.max(1,...months.map(x=>x.metrics.due));
+  return '<div class="v2-monthbars">'+months.map(x=>'<div class="v2-monthrow"><b>'+esc2(x.key)+'</b><div class="v2-monthtrack"><span style="width:'+Math.round(x.metrics.due/max*100)+'%"></span></div><strong>'+fmt(x.metrics.due)+'</strong></div>').join('')+'</div><p class="v2-footnote">Proyección basada en gastos recurrentes y cuotas registradas. No supone que todos los compromisos futuros estén ingresados.</p>';
+ }
+ function goalProgress(){
+  const m=metrics(),goals=Array.isArray(state.objectives)?state.objectives:[];
+  const target=3000000;const progress=Math.max(0,Math.min(100,m.income/target*100));
+  return '<div class="v2-goal"><div class="v2-goalnumbers"><span>Ingreso registrado del mes</span><strong>'+fmt(m.income)+'</strong></div><div class="v2-meter"><div style="width:'+progress+'%"></div></div><div class="v2-goalnumbers"><span>Meta de referencia</span><strong>'+fmt(target)+'</strong></div><div class="v2-goalgap">Brecha para alcanzar la meta: <b>'+fmt(Math.max(0,target-m.income))+'</b></div><p class="v2-footnote">Meta referencial editable en una próxima etapa. Los ingresos proyectados no equivalen a cobros realizados.</p>'+goals.slice(0,3).map(o=>'<div class="v2-goalitem"><span>'+esc2(o.name)+'</span><b>'+fmt(o.current)+' / '+fmt(o.target)+'</b></div>').join('')+'</div>';
+ }
+
  const redraw=render;
  render=function(){redraw(); if(page==='Inicio')document.querySelectorAll('#view [data-p]').forEach(b=>b.onclick=()=>{page=b.dataset.p;shell()});};
  function titleFor(){return mainPage(page)}
  function v2nav(){return NAV.map(([label,ico,target])=>'<button class="v2-navitem '+(page===target?'active':'')+'" data-v2nav="'+target+'"><span class="v2-icon">'+ico+'</span><span>'+label+'</span></button>').join('')}
  shell=function(){
-  document.querySelector('#app').innerHTML='<div class="v2-layout"><aside class="v2-sidebar" id="v2-sidebar"><div class="v2-brand"><img src="https://danielmunoz-debitar.github.io/centro-operaciones/assets/logo-debitar.png" alt="DEBITAR"><small>CENTRO DE OPERACIONES 2.0</small></div><div class="v2-navlabel">MÓDULOS</div><nav class="v2-navigation">'+v2nav()+'</nav><div class="v2-sidefoot">Versión 2.0 · Entorno independiente</div></aside><div class="v2-main"><header class="v2-top top"><button class="v2-menu" id="v2-toggle" aria-label="Abrir menú">☰</button><div class="v2-topname"><b>'+esc2(titleFor())+'</b><small>DEBITAR · Gestión integral</small></div><div class="v2-topright"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><div class="v2-content"><div class="v2-subhead"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div><div class="v2-submenu">'+(page==='DEBITAR'?'<button data-v2jump="clientes">Clientes</button><button data-v2jump="prospectos">Prospectos</button><button data-v2jump="cobranza">Cobranza</button>':'')+'</div></div><div id="view"></div></div></div></div>';
-  document.querySelectorAll('[data-v2nav]').forEach(b=>b.onclick=()=>{const p=b.dataset.v2nav;if(p==='Documentos'){page='Documentos';document.querySelector('#view').innerHTML='<div class="card"><h2>Documentos</h2><p>Módulo previsto para una etapa posterior. No se han alterado los archivos actuales.</p></div>';shell();return;}page=p;shell();});
-  document.querySelector('#v2-toggle').onclick=()=>document.querySelector('#v2-sidebar').classList.toggle('v2-open');
+  const menu=[
+   ['Inicio','Inicio',[['Panel general','Inicio'],['Objetivos y metas','Objetivos']]],
+   ['Clientes','DEBITAR',[['Cartera y fichas','DEBITAR'],['Prospectos','DEBITAR','Prospectos'],['Honorarios y cobranza','DEBITAR','Cobranza'],['Gestiones por cliente','DEBITAR','Clientes']]],
+   ['Finanzas','Finanzas',[['Flujo de caja','Finanzas'],['Bancos y cuentas','Finanzas'],['Ingresos','Finanzas'],['Gastos','Gastos'],['Deudas y cuotas','Deudas'],['Metas y presupuestos','Objetivos']]],
+   ['Uber','Uber',[['Turno y viajes','Uber'],['Billetera y combustible','Uber'],['Informes','Reportes']]],
+   ['Tareas y operaciones','Tareas',[['Tareas pendientes','Tareas'],['Calendario y vencimientos','Tareas']]],
+   ['Reportes','Reportes',[['Informes financieros','Reportes'],['Cobranza','DEBITAR','Cobranza']]],
+   ['Documentos','Documentos',[['Archivos y plantillas','Documentos']]],
+   ['Configuración','Configuración',[['Parámetros','Configuración'],['Respaldos JSON','Configuración']]]
+  ];
+  const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+(anchor?'data-v2anchor="'+anchor+'"':'')+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
+  document.querySelector('#app').innerHTML='<div class="v2-hlayout"><header class="v2-hheader top"><div class="v2-hbrand"><img src="https://danielmunoz-debitar.github.io/centro-operaciones/assets/logo-debitar.png" alt="DEBITAR"><span>CENTRO DE OPERACIONES 2.0</span></div><div class="v2-hmeta"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><nav class="v2-hnav"><button id="v2-mobile-menu" class="v2-mobile-menu">☰ Módulos</button><div class="v2-hnavitems" id="v2-hnavitems">'+menuHtml+'</div></nav><main class="v2-hmain"><div class="v2-hheading"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div></div><div id="view"></div></main></div>';
+  document.querySelectorAll('[data-v2nav]').forEach(b=>b.onclick=e=>{
+   e.stopPropagation();page=b.dataset.v2nav;
+   const anchor=b.dataset.v2anchor;
+   shell();
+   if(anchor){const h=[...document.querySelectorAll('#view h1,#view h2,#view h3')].find(x=>x.textContent.toLowerCase().includes(anchor.toLowerCase()));h?.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+  document.querySelector('#v2-mobile-menu').onclick=()=>document.querySelector('#v2-hnavitems').classList.toggle('open');
   document.querySelector('#month').onchange=e=>{state.selectedMonth=e.target.value;save();shell()};
-  if(page==='Documentos'){document.querySelector('#view').innerHTML='<div class="card"><h2>Documentos</h2><p>Próximamente: plantillas, archivos por cliente e informes.</p></div>';}
-  else render();
-  document.querySelectorAll('[data-v2jump]').forEach(b=>b.onclick=()=>{const text=b.dataset.v2jump==='clientes'?'Clientes':b.dataset.v2jump==='prospectos'?'Prospectos':'Cobranza';const h=[...document.querySelectorAll('#view h1,#view h2,#view h3')].find(x=>x.textContent.toLowerCase().includes(text.toLowerCase()));h?.scrollIntoView({behavior:'smooth',block:'start'});});
+  if(page==='Documentos'){document.querySelector('#view').innerHTML='<div class="card"><h2>Documentos</h2><p>Módulo en preparación. Los archivos actuales permanecen intactos.</p></div>';}else render();
  };
  shell();
 })();
