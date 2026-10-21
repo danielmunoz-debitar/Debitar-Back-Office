@@ -94,3 +94,50 @@ body{background:#091323;color:var(--txt);font-family:Inter,system-ui,Segoe UI,sa
 .v2-hmain{padding:15px 11px 35px}.v2-hheading h1{font-size:22px}.v2-hlayout .v2-kpis{gap:8px}.v2-hlayout .v2-stat{padding:12px}.v2-hlayout .v2-stat strong{font-size:19px}
 .v2-chartlayout{flex-direction:column;align-items:stretch}.v2-donut{margin:auto}.v2-analytics-card{padding:15px}.v2-chartlegend>div{grid-template-columns:11px minmax(0,1fr) auto auto}.v2-monthrow{grid-template-columns:61px minmax(0,1fr) 87px;font-size:11px}
 }
+
+
+/* 2.0.4 global legacy-module contrast repair — scoped only to isolated v2 */
+.v2-hlayout #view{color:#203047!important}
+.v2-hlayout #view h1,.v2-hlayout #view h2,.v2-hlayout #view h3,.v2-hlayout #view h4,.v2-hlayout #view .big,.v2-hlayout #view .kpi b,.v2-hlayout #view strong{color:#1b2d45!important}
+.v2-hlayout #view .card,.v2-hlayout #view .kpi,.v2-hlayout #view .shift-live,.v2-hlayout #view .startshift,.v2-hlayout #view .hero,.v2-hlayout #view .project-card,.v2-hlayout #view .project-card:hover{background:#fff!important;color:#203047!important;border-color:#dce5ee!important;box-shadow:0 3px 14px #193b5810!important}
+.v2-hlayout #view .card p,.v2-hlayout #view .card span,.v2-hlayout #view .card label,.v2-hlayout #view .card small,.v2-hlayout #view .card em,.v2-hlayout #view .card .muted,.v2-hlayout #view .hero p,.v2-hlayout #view .project-card p,.v2-hlayout #view .project-card small,.v2-hlayout #view .project-card label,.v2-hlayout #view .project-card span{color:#526a82!important}
+.v2-hlayout #view .card h1,.v2-hlayout #view .card h2,.v2-hlayout #view .card h3,.v2-hlayout #view .card h4,.v2-hlayout #view .card b,.v2-hlayout #view .card strong,.v2-hlayout #view .project-card h3,.v2-hlayout #view .project-card b,.v2-hlayout #view .project-card strong,.v2-hlayout #view .hero h2{color:#1b2d45!important}
+.v2-hlayout #view .card .big,.v2-hlayout #view .card .num,.v2-hlayout #view .kpi b{color:#162c47!important}
+.v2-hlayout #view .card .btn:not(.ghost),.v2-hlayout #view .btn:not(.ghost){color:#fff!important}
+.v2-hlayout #view .btn.ghost,.v2-hlayout #view .card .btn.ghost{background:#edf5f8!important;color:#174a63!important;border:1px solid #b6cdd9!important}
+.v2-hlayout #view .btn.ghost:hover{background:#d8edf4!important}
+.v2-hlayout #view .notice{background:#e8f6f2!important;color:#176552!important;border:1px solid #bce4d8!important}
+.v2-hlayout #view .empty{color:#60768d!important}
+.v2-hlayout #view .bar,.v2-hlayout #view .v2-meter{background:#e5ecf3!important}
+.v2-hlayout #view .line,.v2-hlayout #view .productivity{border-bottom-color:#e4eaf0!important}
+.v2-hlayout #view .productivity small,.v2-hlayout #view .goalmini small{color:#5e7287!important}
+.v2-hlayout #view .shift-stats span,.v2-hlayout #view .project-metrics span,.v2-hlayout #view .project-metrics>div{background:#eaf3f8!important;color:#526a82!important}
+.v2-hlayout #view .shift-stats b,.v2-hlayout #view .project-metrics b{color:#1b2d45!important}
+.v2-hlayout #view .field label{color:#526a82!important}
+.v2-hlayout #view .field input,.v2-hlayout #view .field select,.v2-hlayout #view .field textarea,.v2-hlayout #view input:not([type=checkbox]):not([type=radio]),.v2-hlayout #view select,.v2-hlayout #view textarea{background:#fff!important;color:#1c3048!important;border:1px solid #bacbdc!important}
+.v2-hlayout #view input::placeholder,.v2-hlayout #view textarea::placeholder{color:#72859b!important}
+.v2-hlayout #view table{background:#fff!important;color:#203047!important}
+.v2-hlayout #view table thead,.v2-hlayout #view table thead tr,.v2-hlayout #view table thead th{background:#eaf2f7!important;color:#2d5268!important;border-color:#dbe6ee!important}
+.v2-hlayout #view table tbody tr,.v2-hlayout #view table tbody tr:nth-child(even){background:#fff!important;color:#203047!important}
+.v2-hlayout #view table tbody tr:nth-child(even){background:#f5f9fc!important}
+.v2-hlayout #view table tbody td,.v2-hlayout #view table tbody td span,.v2-hlayout #view table tbody td small,.v2-hlayout #view table tbody td b,.v2-hlayout #view table tbody td strong{color:#203047!important;border-color:#e2eaf0!important}
+.v2-hlayout #view .pill{background:#e8f0f7!important;color:#2c4b64!important}
+.v2-hlayout #view .pill.ok{background:#d8f4e8!important;color:#146e4d!important}
+.v2-hlayout #view .pill.wait{background:#fff0d6!important;color:#855300!important}
+.v2-hlayout #view .pill.bad{background:#fbe1e5!important;color:#a3314a!important}
+.v2-hlayout #view .task-overdue{background:#fff0ee!important;color:#842f3e!important}
+.v2-hlayout #view .task-overdue td,.v2-hlayout #view .task-overdue span{color:#842f3e!important}
+.v2-hlayout #view .v2-panel .v2-total{background:#e7f2f6!important}
+.v2-hlayout #view .v2-panel .v2-total span{color:#3e566c!important}
+.v2-hlayout #view .v2-panel .v2-total strong{color:#1b2d45!important}
+.v2-hlayout #view .v2-quickbutton{background:#eaf8f7!important;color:#17384b!important;border-color:#cbe7e7!important}
+.v2-hlayout #view .v2-quickbutton span{color:#008a97!important}
+.v2-hlayout #view .v2-analytics-card{color:#21364d!important}
+.v2-hlayout #view .v2-analytics-card p{color:#62778c!important}
+.v2-hlayout #view .v2-analytics-card strong,.v2-hlayout #view .v2-analytics-card b{color:#1b2d45!important}
+.v2-hlayout #view .v2-chartlegend span{color:#455d73!important}
+.v2-hlayout #view .v2-donut small{color:#62778c!important}
+/* Keep modal intentionally dark, since original application modal components use a dark palette */
+.modal-bg .modal,.modal-bg .modal .card{background:#13263e!important;color:#edf7ff!important}
+.modal-bg .modal h2,.modal-bg .modal h3,.modal-bg .modal strong{color:#f2f8ff!important}
+@media(max-width:700px){.v2-hlayout #view .grid.two,.v2-hlayout #view .grid.three,.v2-hlayout #view .grid.kpis{grid-template-columns:1fr!important}.v2-hlayout #view .card:has(table){overflow-x:auto!important}}
