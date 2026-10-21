@@ -286,3 +286,68 @@ body{background:#091323;color:var(--txt);font-family:Inter,system-ui,Segoe UI,sa
 .v2-hlayout #view .task-overdue span{color:#8b293a!important}
 .v2-hlayout #view .cash-banner>div{border-top:3px solid #7645a6!important}
 .v2-hlayout #view .time-focus{border-left:4px solid #51c5d6!important}
+
+
+/* 2.0.8 — DEBITAR interactive cards: subtle macOS-style lift without breaking table layouts */
+@media (hover:hover) and (pointer:fine) {
+ .v2-hlayout #view .card,
+ .v2-hlayout #view .v2-stat,
+ .v2-hlayout #view .v2-analytics-card,
+ .v2-hlayout #view .v2-subcard,
+ .v2-hlayout #view .project-card,
+ .v2-hlayout #view .client-card,
+ .v2-hlayout #view .task-card,
+ .v2-hlayout #view .v2-quickbutton {
+  transition:transform .22s cubic-bezier(.2,.9,.2,1),box-shadow .22s ease,border-color .22s ease,background-color .22s ease!important;
+  transform-origin:center center;
+ }
+ .v2-hlayout #view .card:hover,
+ .v2-hlayout #view .v2-stat:hover,
+ .v2-hlayout #view .v2-analytics-card:hover,
+ .v2-hlayout #view .v2-subcard:hover,
+ .v2-hlayout #view .project-card:hover,
+ .v2-hlayout #view .client-card:hover,
+ .v2-hlayout #view .task-card:hover {
+  transform:translateY(-3px) scale(1.008);
+  box-shadow:0 13px 30px #35205a22!important;
+  border-color:#a98acb!important;
+  position:relative;
+  z-index:2;
+ }
+ .v2-hlayout #view .v2-quickbutton:hover {
+  transform:translateY(-3px) scale(1.035);
+  box-shadow:0 9px 18px #39236c1f!important;
+ }
+ .v2-hlayout #view table tbody tr {
+  transition:background-color .16s ease,box-shadow .16s ease!important;
+ }
+ .v2-hlayout #view table tbody tr:hover,
+ .v2-hlayout #view .task-row:hover {
+  background:#f1ebfa!important;
+  box-shadow:inset 4px 0 #6c39a4!important;
+ }
+ .v2-hlayout #view table tbody tr:hover td,
+ .v2-hlayout #view table tbody tr:hover td *,
+ .v2-hlayout #view .task-row:hover * {
+  color:#281b43!important;
+ }
+ .v2-hlayout #view .btn:hover,
+ .v2-hlayout #view button:not(.v2-menuitem):not(.v2-mobile-menu):hover {
+  filter:brightness(1.045);
+ }
+}
+.v2-hlayout #view .card:focus-within,
+.v2-hlayout #view .v2-subcard:focus-within{border-color:#8960b5!important}
+.v2-hlayout #view button:focus-visible,
+.v2-hlayout .v2-menuitem:focus-visible{outline:3px solid #4ccfe1!important;outline-offset:2px!important}
+@media(prefers-reduced-motion:reduce){
+ .v2-hlayout #view .card,
+ .v2-hlayout #view .v2-stat,
+ .v2-hlayout #view .v2-analytics-card,
+ .v2-hlayout #view .v2-subcard,
+ .v2-hlayout #view .project-card,
+ .v2-hlayout #view .client-card,
+ .v2-hlayout #view .task-card,
+ .v2-hlayout #view .v2-quickbutton,
+ .v2-hlayout #view table tbody tr{transition:none!important;transform:none!important}
+}
