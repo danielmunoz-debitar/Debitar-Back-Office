@@ -183,3 +183,33 @@ body{background:#091323;color:var(--txt);font-family:Inter,system-ui,Segoe UI,sa
 .v2-hlayout #view .v2-panel .v2-total strong{color:#352151!important}
 .v2-hlayout .v2-analytics-card{border-top:3px solid #7448ac!important}
 @media(max-width:700px){.v2-hbrand img{width:120px!important;height:50px!important}.v2-hnav{background:#372156!important}}
+
+
+/* DEBITAR 2.0.6 — elastic macOS-inspired menu motion and independent submenu views */
+.v2-hnav{overflow:visible!important}
+.v2-hnavitems{gap:7px!important;min-height:49px}
+.v2-dropdown{isolation:isolate;transition:transform .2s cubic-bezier(.22,1,.36,1),filter .2s ease;transform-origin:center bottom;z-index:1}
+.v2-dropdown:hover,.v2-dropdown:focus-within{transform:scale(1.095) translateY(-2px);z-index:35;filter:drop-shadow(0 5px 10px #130b2640)}
+.v2-dropdown:hover + .v2-dropdown,.v2-dropdown:has(+ .v2-dropdown:hover){transform:scale(1.035)}
+.v2-menuitem{transition:background .2s ease,border-color .2s ease;white-space:nowrap;border-radius:8px 8px 0 0}
+.v2-dropdown:hover .v2-menuitem,.v2-dropdown:focus-within .v2-menuitem{background:#6c3c9b!important;color:#fff!important}
+.v2-dropcontent{transform-origin:top left;filter:none}
+.v2-droplist button{color:#28344b!important;font-weight:600}
+.v2-droplist button:hover,.v2-droplist button:focus-visible{color:#46216d!important;background:#f0e8f8!important}
+.v2-hlayout .v2-subcard{background:#fff;border:1px solid #e1e5ee;border-top:3px solid #6c3ba4;border-radius:14px;padding:22px;box-shadow:0 6px 20px #2013330c}
+.v2-subcard h2{color:#2c2044!important;margin:0 0 8px;font-size:19px}
+.v2-subcard p{color:#61718a!important;font-size:13px}
+.v2-subcard .btn{margin:8px 0 14px}
+.v2-scroll{width:100%;overflow-x:auto;margin-top:12px}
+.v2-subcard table{width:100%;border-collapse:collapse;background:#fff!important;min-width:620px}
+.v2-subcard thead th{background:#f1edf8!important;color:#453063!important;text-align:left;padding:13px 12px;border-bottom:1px solid #ded5ec}
+.v2-subcard tbody tr,.v2-subcard tbody tr:nth-child(even){background:#fff!important}
+.v2-subcard tbody tr:nth-child(even){background:#f8f7fb!important}
+.v2-subcard tbody td,.v2-subcard tbody td b,.v2-subcard tbody td span{color:#24334b!important;padding:11px 12px}
+.v2-subcard .v2-state{background:#fff1dc;color:#8b5b0b!important;border-radius:20px;padding:4px 9px;font-size:12px}
+.v2-subcard .v2-state.paid{background:#ddf5ea;color:#176747!important}
+.v2-hlayout #view .v2-filtered{display:none!important}
+.v2-hlayout #view .v2-subcard .btn{color:#fff!important}
+.v2-hlayout #view .v2-subcard .btn.ghost{background:#f3eef8!important;color:#553384!important;border-color:#cfc0e0!important}
+@media(prefers-reduced-motion:reduce){.v2-dropdown,.v2-menuitem{transition:none!important}.v2-dropdown:hover,.v2-dropdown:focus-within{transform:none!important}}
+@media(max-width:700px){.v2-dropdown:hover,.v2-dropdown:focus-within,.v2-dropdown:hover + .v2-dropdown,.v2-dropdown:has(+ .v2-dropdown:hover){transform:none!important;filter:none!important}.v2-subcard{padding:14px!important}.v2-hnavitems{gap:0!important}}
