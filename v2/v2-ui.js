@@ -93,6 +93,7 @@
      content=template(label,'Tareas registradas, prioridades, fechas y seguimiento.',task());break;
     case 'Tareas|Calendario y vencimientos':
      content=template(label,'Agenda y vencimientos asociados a las tareas existentes.',pick(task(),[1,2,3]));break;
+    case 'Reportes|Informes':
     case 'Reportes|Informes financieros':
      content=template(label,'Resultados históricos y flujo de caja del período.',rep());break;
     case 'Configuración|Parámetros':
