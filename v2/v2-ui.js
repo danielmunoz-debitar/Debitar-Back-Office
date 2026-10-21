@@ -105,13 +105,12 @@
    ['Documentos','Documentos',[['Archivos y plantillas','Documentos']]],
    ['Configuración','Configuración',[['Parámetros','Configuración'],['Respaldos JSON','Configuración']]]
   ];
-  const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+(anchor?'data-v2sub="'+esc2(name)+'"':'')+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
+  const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+'data-v2sub="'+esc2(name)+'"'+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
   document.querySelector('#app').innerHTML='<div class="v2-hlayout"><header class="v2-hheader top"><div class="v2-hbrand"><img src="https://danielmunoz-debitar.github.io/centro-operaciones/assets/logo-debitar.png" alt="DEBITAR"><span>CENTRO DE OPERACIONES 2.0</span></div><div class="v2-hmeta"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><nav class="v2-hnav"><button id="v2-mobile-menu" class="v2-mobile-menu">☰ Módulos</button><div class="v2-hnavitems" id="v2-hnavitems">'+menuHtml+'</div></nav><main class="v2-hmain"><div class="v2-hheading"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div></div><div id="view"></div></main></div>';
   document.querySelectorAll('[data-v2nav]').forEach(b=>b.onclick=e=>{
    e.stopPropagation();page=b.dataset.v2nav;
-   const anchor=b.dataset.v2anchor;
+   v2Section=b.dataset.v2sub||'';
    shell();
-   if(anchor){const h=[...document.querySelectorAll('#view h1,#view h2,#view h3')].find(x=>x.textContent.toLowerCase().includes(anchor.toLowerCase()));h?.scrollIntoView({behavior:'smooth',block:'start'});}
   });
   document.querySelector('#v2-mobile-menu').onclick=()=>document.querySelector('#v2-hnavitems').classList.toggle('open');
   document.querySelector('#month').onchange=e=>{state.selectedMonth=e.target.value;save();shell()};
