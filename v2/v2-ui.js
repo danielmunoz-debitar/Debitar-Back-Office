@@ -1,7 +1,7 @@
 /* DEBITAR 2.0 — isolated presentation layer; original business functions retained. */
 (function(){
  const oldDashboard=dashboard;
- const NAV=[['Inicio','⌂','Inicio'],['Clientes','▣','DEBITAR'],['Finanzas','◫','Finanzas'],['Gastos','↓','Gastos'],['Deudas','◇','Deudas'],['Uber','▰','Uber'],['Tareas y operaciones','✓','Tareas'],['Reportes','▤','Reportes'],['Documentos','▧','Documentos'],['Configuración','⚙','Configuración']];
+ const NAV=[['Inicio','⌂','Inicio'],['Clientes','▣','DEBITAR'],['Finanzas','◫','Finanzas'],['Gastos','↓','Gastos'],['Deudas','◇','Deudas'],['Tareas y operaciones','✓','Tareas'],['Reportes','▤','Reportes'],['Documentos','▧','Documentos'],['Configuración','⚙','Configuración']];
  const mainPage=p=>p==='DEBITAR'?'Clientes':p;
  const esc2=s=>esc(s);
  const oldRender=render;
@@ -10,7 +10,7 @@
   const pending=Math.max(0,Number(m.pending??(due-paid))||0);
   const share=due?Math.min(100,Math.max(0,paid/due*100)):0;
   const cards=[
-   ['Ingresos del mes',fmt(m.income),'Trabajo · DEBITAR · Uber'],
+   ['Ingresos del mes',fmt(m.income),'Trabajo · DEBITAR · otros'],
    ['Pendiente por pagar',fmt(pending),'Disminuye al registrar pagos'],
    ['Cobranza DEBITAR',fmt(Math.max(0,m.expectedDebitar-m.debitar)),'Honorarios aún por cobrar'],
    ['Resultado proyectado',fmt(m.result),'Ingresos menos obligaciones']
@@ -24,7 +24,7 @@
    '<div class="v2-total"><span>Total gastos y obligaciones del mes</span><strong>'+fmt(due)+'</strong></div>'+
    '<div class="actions"><button class="btn ghost" data-p="Gastos">Ver gastos</button><button class="btn ghost" data-p="Deudas">Ver deudas</button></div></div>'+
    '<div class="card v2-panel"><div class="section"><h2>Accesos rápidos</h2></div><div class="v2-quick">'+
-   [['DEBITAR','Clientes y cobranza'],['Finanzas','Flujo de caja'],['Uber','Registrar turno'],['Tareas','Tareas y vencimientos'],['Reportes','Informes'],['Configuración','Respaldos JSON']].map(a=>'<button class="v2-quickbutton" data-p="'+a[0]+'">'+a[1]+' <span>↗</span></button>').join('')+
+   [['DEBITAR','Clientes y cobranza'],['Finanzas','Flujo de caja'],['Tareas','Tareas y vencimientos'],['Reportes','Informes'],['Configuración','Respaldos JSON']].map(a=>'<button class="v2-quickbutton" data-p="'+a[0]+'">'+a[1]+' <span>↗</span></button>').join('')+
    '</div><p class="muted">Indicadores calculados a partir de los registros disponibles en esta versión.</p></div></div>'+
    '<div class="v2-analytics">'+
    '<section class="v2-analytics-card"><h3>¿Dónde va mi dinero?</h3><p>Distribución de gastos comprometidos por categoría</p>'+expenseChart()+'</section>'+
@@ -158,14 +158,13 @@
    ['Inicio','Inicio',[['Panel general','Inicio'],['Objetivos y metas','Objetivos']]],
    ['Clientes','DEBITAR',[['Cartera y fichas','DEBITAR'],['Prospectos','DEBITAR','Prospectos'],['Honorarios y cobranza','DEBITAR','Cobranza'],['Gestiones por cliente','DEBITAR','Clientes']]],
    ['Finanzas','Finanzas',[['Flujo de caja','Finanzas'],['Bancos y cuentas','Finanzas'],['Ingresos','Finanzas'],['Gastos','Gastos'],['Deudas y cuotas','Deudas'],['Metas y presupuestos','Objetivos']]],
-   ['Uber','Uber',[['Turno y viajes','Uber'],['Billetera y combustible','Uber'],['Informes','Reportes']]],
    ['Tareas y operaciones','Tareas',[['Tareas pendientes','Tareas'],['Calendario y vencimientos','Tareas']]],
    ['Reportes','Reportes',[['Informes financieros','Reportes'],['Cobranza','DEBITAR','Cobranza']]],
    ['Documentos','Documentos',[['Archivos y plantillas','Documentos']]],
    ['Configuración','Configuración',[['Parámetros','Configuración'],['Respaldos JSON','Configuración']]]
   ];
   const menuHtml=menu.map(([label,target,items])=>'<div class="v2-dropdown"><button aria-haspopup="true" aria-expanded="false" class="v2-menuitem '+(page===target?'active':'')+'" data-v2nav="'+target+'">'+esc2(label)+' <span>⌄</span></button><div class="v2-dropcontent"><div class="v2-droptitle">'+esc2(label)+'</div><div class="v2-droplist">'+items.map(([name,p,anchor])=>'<button data-v2nav="'+p+'" '+'data-v2sub="'+esc2(name)+'"'+'><span class="v2-dropicon">↗</span><span>'+esc2(name)+'</span></button>').join('')+'</div></div></div>').join('');
-  document.querySelector('#app').innerHTML='<div class="v2-hlayout"><header class="v2-hheader top"><div class="v2-hbrand"><img src="../debitar-logo.png" alt="DEBITAR"><span>CENTRO DE OPERACIONES 2.0</span></div><div class="v2-hmeta"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><nav class="v2-hnav"><button id="v2-mobile-menu" class="v2-mobile-menu">☰ Módulos</button><div class="v2-hnavitems" id="v2-hnavitems">'+menuHtml+'</div></nav><main class="v2-hmain"><div class="v2-hheading"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div></div><div id="view"></div></main></div>';
+  document.querySelector('#app').innerHTML='<div class="v2-hlayout"><header class="v2-hheader top"><div class="v2-hbrand"><img src="https://danielmunoz-debitar.github.io/centro-operaciones/assets/logo-debitar.png" alt="DEBITAR" onerror="this.onerror=null;this.src=\'../debitar-logo.png\'"><span>CENTRO DE OPERACIONES 2.0</span></div><div class="v2-hmeta"><label for="month">Período</label><input class="month" id="month" type="month" value="'+esc2(state.selectedMonth)+'"><span class="v2-avatar">D</span></div></header><nav class="v2-hnav"><button id="v2-mobile-menu" class="v2-mobile-menu">☰ Módulos</button><div class="v2-hnavitems" id="v2-hnavitems">'+menuHtml+'</div></nav><main class="v2-hmain"><div class="v2-hheading"><div><span class="v2-eyebrow">DEBITAR / '+esc2(titleFor())+'</span><h1>'+esc2(titleFor())+'</h1></div></div><div id="view"></div></main></div>';
   document.querySelectorAll('[data-v2nav]').forEach(b=>b.onclick=e=>{
    e.stopPropagation();
    if(b.classList.contains('v2-menuitem')){
