@@ -21,3 +21,39 @@ body,.v2-hlayout{background:#f2f6fb!important;color:#112849!important;font-famil
 .v2-hlayout :focus-visible{outline:3px solid #31a6ed!important;outline-offset:3px}
 @media(max-width:700px){.v2-hlayout .v2-stat:hover,.v2-hlayout .v2-panel:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.v2-hlayout *{transition:none!important;animation:none!important;transform:none!important}}
+
+/* 3.0.1 legibility hotfix: legacy dark row styles are incompatible with light dashboard. */
+.v2-hlayout #view .client-cube,
+.v2-hlayout #view .brief-row,
+.v2-hlayout #view .journal-row,
+.v2-hlayout #view .task-overdue,
+.v2-hlayout #view .task-row,
+.v2-hlayout #view .agenda-slot,
+.v2-hlayout #view .notice,
+.v2-hlayout #view .commercial-workbench,
+.v2-hlayout #view .pipe-col,
+.v2-hlayout #view .ops-tabs,
+.v2-hlayout #view .addon-check,
+.v2-hlayout #view .campaign-card {
+ background:#fff!important;color:#18324f!important;border-color:#d9e5f1!important;
+}
+.v2-hlayout #view .client-cube.inactive,
+.v2-hlayout #view .client-cube.is-inactive{background:#fff4f6!important}
+.v2-hlayout #view .brief-row.bad,
+.v2-hlayout #view .journal-row.red,
+.v2-hlayout #view .task-overdue{background:#fff0f2!important;color:#782c40!important}
+.v2-hlayout #view .brief-row.wait,
+.v2-hlayout #view .journal-row.amber{background:#fff8e9!important;color:#76501c!important}
+.v2-hlayout #view .client-cube :is(b,strong,small,span,p,div),
+.v2-hlayout #view .brief-row :is(b,strong,small,span,p,div),
+.v2-hlayout #view .journal-row :is(b,strong,small,span,p,div),
+.v2-hlayout #view .task-overdue :is(b,strong,small,span,p,div),
+.v2-hlayout #view .task-row :is(b,strong,small,span,p,div),
+.v2-hlayout #view .agenda-slot :is(b,strong,small,span,p,div),
+.v2-hlayout #view .notice :is(b,strong,small,span,p,div){color:inherit!important}
+.v2-hlayout #view .client-cube small,
+.v2-hlayout #view .brief-row small,
+.v2-hlayout #view .journal-row small,
+.v2-hlayout #view .task-row small{color:#516a84!important}
+.v2-hlayout #view .btn{color:#fff}
+.v2-hlayout #view .btn.ghost{color:#164b77}
