@@ -124,14 +124,21 @@
     root.innerHTML=monthlyControlBlock();bind();return;
 
    }else{
-    root.innerHTML='<section class="v2-subcard"><h2>Cartera y fichas</h2><div class="field"><label for="v2-client-search">Buscar por nombre, RUT, correo o teléfono</label><input id="v2-client-search" type="search" placeholder="Buscar cliente" autocomplete="off"></div><p id="v2-client-count" role="status"></p></section>'+debitar();
-    const search=root.querySelector('#v2-client-search');
-    search.oninput=()=>{
-     const q=search.value.trim().toLocaleLowerCase('es-CL');
-     const ids=new Set(clients.filter(c=>[c.name,c.rut,c.email,c.phone].join(' ').toLocaleLowerCase('es-CL').includes(q)).map(c=>c.id));
-     root.querySelectorAll('.portfolio-row, tr').forEach(row=>{const b=row.querySelector('[data-client],[data-client-ops]');if(b)row.hidden=!ids.has(b.dataset.client||b.dataset.clientOps)});
-     root.querySelector('#v2-client-count').textContent=ids.size+' clientes encontrados';
-    };search.oninput();
+    const active=clients.filter(c=>c.active),inactive=clients.length-active.length;
+    const monthly=active.reduce((sum,c)=>sum+(Number(c.fee)||0),0);
+    const kpis='<div class="v2-kpis v2-portfolio-kpis">'+[
+      ['Clientes activos',String(active.length)],['Honorarios mensuales',fmt(monthly)],
+      ['Clientes inactivos',String(inactive)],['Total de fichas',String(clients.length)]
+    ].map(([name,value])=>'<div class="v2-stat"><small>'+name+'</small><strong>'+value+'</strong></div>').join('')+'</div>';
+    const rows=clients.map(c=>'<tr class="v2-client-row" data-status="'+(c.active?'active':'inactive')+'" data-search="'+esc2([c.name,c.rut,c.email,c.phone].filter(Boolean).join(' ').toLocaleLowerCase('es-CL'))+'"><td><strong>'+esc2(c.name||'Sin nombre')+'</strong></td><td><span class="v2-state '+(c.active?'paid':'')+'">'+(c.active?'Activo':'Inactivo')+'</span></td><td>'+fmt(c.fee)+'</td><td>'+esc2(c.day||c.paymentDay||'—')+'</td><td><button class="btn ghost sm" data-client="'+esc2(c.id)+'">Ver / editar ficha</button></td></tr>');
+    root.innerHTML='<div class="v2-portfolio">'+kpis+
+      '<section class="v2-subcard"><div class="v2-portfolio-toolbar"><div><h2>Cartera de clientes</h2><p>Información esencial. Abre cada ficha para consultar o modificar los demás datos.</p></div><div class="v2-portfolio-actions"><button class="btn ghost sm" data-v2portfolio="Cobranza">Cobranza</button><button class="btn ghost sm" data-v2portfolio="Gestiones por cliente">Gestiones</button></div></div>'+
+      '<div class="v2-portfolio-filters"><label class="field">Buscar cliente<input id="v2-client-search" type="search" placeholder="Nombre, RUT o contacto" autocomplete="off"></label><label class="field">Estado<select id="v2-client-status"><option value="active">Activos</option><option value="all">Todos</option><option value="inactive">Inactivos</option></select></label></div>'+
+      '<p id="v2-client-count" role="status"></p>'+table(['Cliente','Estado','Honorario','Día de cobro','Ficha'],rows)+'</section></div>';
+    const search=root.querySelector('#v2-client-search'),status=root.querySelector('#v2-client-status');
+    const filter=()=>{let count=0;const q=search.value.trim().toLocaleLowerCase('es-CL');root.querySelectorAll('.v2-client-row').forEach(row=>{const ok=row.dataset.search.includes(q)&&(status.value==='all'||row.dataset.status===status.value);row.hidden=!ok;if(ok)count++});root.querySelector('#v2-client-count').textContent=count+' clientes visibles'};
+    search.oninput=filter;status.onchange=filter;filter();
+    root.querySelectorAll('[data-v2portfolio]').forEach(button=>button.onclick=()=>{v2Section=button.dataset.v2portfolio;shell()});
    }
    bind();return;
   }
