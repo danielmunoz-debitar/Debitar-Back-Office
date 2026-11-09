@@ -1,6 +1,37 @@
 /* DEBITAR 2.0 — isolated presentation layer; original business functions retained. */
 (function(){
  const oldDashboard=dashboard;
+ /* Batch task completion: selection only; no deletion or change to completed tasks. */
+ const originalTasksPage=tasksPage;
+ tasksPage=function(){
+  const html=originalTasksPage();
+  const pending=(state.tasks||[]).filter(t=>t.status!=='Hecha');
+  if(!pending.length)return html;
+  const controls='<div class="v2-bulkbar"><label><input type="checkbox" id="v2-task-all"> Seleccionar pendientes</label><button type="button" class="btn" id="v2-task-complete" disabled>Marcar seleccionadas como realizadas</button><span id="v2-task-selected">0 seleccionadas</span></div>';
+  const withRows=html.replace(/<tr><td><button class="btn ([^"]*)" data-task-toggle="([^"]+)"/g,(match,cls,id)=>{
+   const t=state.tasks.find(x=>String(x.id)===id);
+   return '<tr><td>'+(t&&t.status!=='Hecha'?'<input class="v2-task-select" type="checkbox" value="'+esc(id)+'" aria-label="Seleccionar tarea">':'')+'</td><td><button class="btn '+cls+'" data-task-toggle="'+id+'"';
+  });
+  return withRows.replace('<th>Estado</th>','<th>Seleccionar</th><th>Estado</th>').replace('<div class="section"><h2>Agenda de trabajo</h2></div>',controls+'<div class="section"><h2>Agenda de trabajo</h2></div>');
+ };
+ document.addEventListener('change',e=>{
+  if(e.target.id==='v2-task-all'){document.querySelectorAll('#view .v2-task-select').forEach(x=>x.checked=e.target.checked)}
+  else if(!e.target.matches('#view .v2-task-select'))return;
+  const checked=document.querySelectorAll('#view .v2-task-select:checked').length;
+  const button=document.querySelector('#v2-task-complete'),counter=document.querySelector('#v2-task-selected');
+  if(button)button.disabled=!checked;if(counter)counter.textContent=checked+' seleccionadas';
+ });
+ document.addEventListener('click',e=>{
+  if(e.target.id!=='v2-task-complete')return;
+  const ids=[...document.querySelectorAll('#view .v2-task-select:checked')].map(x=>x.value);
+  const eligible=(state.tasks||[]).filter(t=>ids.includes(String(t.id))&&t.status!=='Hecha');
+  if(!eligible.length)return;
+  if(!window.confirm('¿Marcar '+eligible.length+' tareas seleccionadas como realizadas? Esta acción actualizará sus estados.'))return;
+  eligible.forEach(t=>{t.status='Hecha'});
+  save(eligible.length+' tareas marcadas como realizadas');
+  render();
+ });
+
  const NAV=[['Inicio','⌂','Inicio'],['Clientes','▣','DEBITAR'],['Finanzas','◫','Finanzas'],['Gastos','↓','Gastos'],['Deudas','◇','Deudas'],['Tareas y operaciones','✓','Tareas'],['Reportes','▤','Reportes'],['Documentos','▧','Documentos'],['Configuración','⚙','Configuración']];
  const mainPage=p=>p==='DEBITAR'?'Clientes':p;
  const esc2=s=>esc(s);
