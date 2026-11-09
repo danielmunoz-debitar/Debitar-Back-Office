@@ -57,3 +57,18 @@ body,.v2-hlayout{background:#f2f6fb!important;color:#112849!important;font-famil
 .v2-hlayout #view .task-row small{color:#516a84!important}
 .v2-hlayout #view .btn{color:#fff}
 .v2-hlayout #view .btn.ghost{color:#164b77}
+
+/* Compact portfolio layout */
+.v2-portfolio{display:grid;gap:18px}
+.v2-portfolio-kpis{margin-bottom:0}
+.v2-portfolio-toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.v2-portfolio-toolbar h2{margin:0 0 5px}
+.v2-portfolio-actions{display:flex;gap:8px;flex-wrap:wrap}
+.v2-portfolio-filters{display:flex;gap:14px;align-items:end;flex-wrap:wrap;margin:18px 0 8px}
+.v2-portfolio-filters .field{display:grid;gap:6px;min-width:210px;color:#34516c}
+.v2-portfolio-filters input,.v2-portfolio-filters select{background:#fff;color:#18324f;border:1px solid #bfcfdf;border-radius:11px;padding:10px}
+.v2-portfolio .v2-scroll{overflow-x:auto}
+.v2-portfolio table{width:100%;border-collapse:collapse}
+.v2-portfolio th,.v2-portfolio td{padding:13px 10px;text-align:left;border-bottom:1px solid #e6edf5;color:#18324f}
+.v2-portfolio tr[hidden]{display:none!important}
+@media(max-width:700px){.v2-portfolio-toolbar{flex-direction:column}.v2-portfolio-filters .field{width:100%}}
